@@ -2,9 +2,12 @@ package com.project.EComApplication.users;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService {
@@ -38,8 +41,27 @@ public class UserService {
     }
 
     public User getUser(Long id) {
-        System.out.println(userList.stream().filter(i -> i.getId().equals(id)).findFirst());
-        return userList.stream().filter(i -> i.getId() == (id)).findFirst().orElseThrow(() ->
+        return userList.stream().filter(i -> (i.getId()).equals(id)).findFirst().orElseThrow(() ->
                 new RuntimeException("invalid id"));
+    }
+
+    public Optional<User> updateUser(User user, Long id) {
+        Optional<User> userOptional = userList.stream().filter(i -> i.getId().equals(id)).findFirst();
+        if(userOptional.isEmpty()){
+            return Optional.empty();
+        }
+        boolean checkNameInput = null == user.getName() || user.getName().isEmpty();
+        boolean checkEmailInput =  null == user.getEmail() || user.getEmail().isEmpty();
+
+        User existingUser = userOptional.get();
+
+        if(!checkEmailInput){
+            existingUser.setEmail(user.getEmail());
+        }
+        if(!checkNameInput){
+            existingUser.setName(user.getName());
+        }
+
+        return Optional.of(existingUser);
     }
 }

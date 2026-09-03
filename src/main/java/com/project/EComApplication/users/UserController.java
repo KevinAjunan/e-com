@@ -3,7 +3,9 @@ package com.project.EComApplication.users;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import java.nio.file.Path;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/users")
@@ -17,7 +19,7 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public User getUser(Long id) {
+    public User getUser(@PathVariable Long id) {
         return userService.getUser(id);
     }
 
@@ -26,8 +28,13 @@ public class UserController {
         return userService.addUser(user);
     }
 
-    @DeleteMapping("deleteUser/{id}")
-    public String removeUserWithId(@PathVariable long id) {
+    @DeleteMapping("/deleteUser/{id}")
+    public String removeUserWithId(@PathVariable Long id) {
         return userService.removeUserWithId(id);
+    }
+
+    @PutMapping("/updateUser/{id}")
+    public Optional<User> updateUser(@RequestBody User user, @PathVariable Long id){
+        return userService.updateUser(user,id);
     }
 }
