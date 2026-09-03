@@ -11,9 +11,7 @@ import lombok.NonNull;
 @AllArgsConstructor
 public class User {
     private Long id;
-    @NonNull
     private String name;
-    @NonNull
     private String email;
 
 }
