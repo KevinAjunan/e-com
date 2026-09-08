@@ -3,8 +3,10 @@ package com.project.EComApplication.users;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService {
@@ -13,9 +15,12 @@ public class UserService {
 
     @Autowired
     UserValidation userValidation;
-
-    public List<User> getAllUsers() {
-        return userRepository.findAll();
+    @Autowired
+    UserMapper userMapper;
+    public List<UserResponse> getAllUsers() {
+        return userRepository.findAll().stream()
+                .map(userMapper::toResponse)
+                .collect(Collectors.toList());
     }
 
     public String addUser(User user) {
@@ -23,6 +28,7 @@ public class UserService {
         if (userOptional.isPresent()) {
             return "user is already in the system";
         }
+        user.setRole(UserRole.CUSTOMER);
         userRepository.save(user);
         return "user added successfully";
     }
@@ -36,11 +42,13 @@ public class UserService {
         return "removed successfully";
     }
 
-    public Optional<User> getUser(Long id) {
-        return userRepository.findById(id);
+    public Optional<UserResponse> getUser(Long id) {
+        Optional<User> userOptional = userRepository.findById(id);
+        return userOptional.map(user -> userMapper.toResponse(user));
+        //        return userRepository.findById(id);
     }
 
-    public Optional<User> updateUser(User user, Long id) {
+    public Optional<UserResponse> updateUser(User user, Long id) {
         Optional<User> userOptional = userRepository.findById(id);
         if (userOptional.isEmpty()) {
             return Optional.empty();
@@ -57,6 +65,6 @@ public class UserService {
             existingUser.setName(user.getName());
         }
         userRepository.save(existingUser);
-        return Optional.of(existingUser);
+        return Optional.of(userMapper.toResponse(existingUser));
     }
 }

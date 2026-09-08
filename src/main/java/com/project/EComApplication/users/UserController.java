@@ -13,12 +13,12 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping
-    public List<User> getAllUsers() {
+    public List<UserResponse> getAllUsers() {
         return userService.getAllUsers();
     }
 
     @GetMapping("/{id}")
-    public Optional<User> getUser(@PathVariable Long id) {
+    public Optional<UserResponse> getUser(@PathVariable Long id) {
         return userService.getUser(id);
     }
 
@@ -33,7 +33,7 @@ public class UserController {
     }
 
     @PutMapping("/updateUser/{id}")
-    public Optional<User> updateUser(@RequestBody User user, @PathVariable Long id){
+    public Optional<UserResponse> updateUser(@RequestBody User user, @PathVariable Long id){
         return userService.updateUser(user,id);
     }
 }
