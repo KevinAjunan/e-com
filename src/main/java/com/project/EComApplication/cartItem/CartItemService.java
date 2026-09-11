@@ -74,12 +74,16 @@ public class CartItemService {
         return "removed successfully";
     }
 
-    public Collection<CartItem> getAllCartItemByUser(String userId) {
+    public List<CartItem> getAllCartItemByUser(String userId) {
         Optional<User> userOptional = userRepository.findById(Long.valueOf(userId));
         if (userOptional.isEmpty()) {
             return new ArrayList<>();
         }
         System.out.println(userOptional.get());
         return cartItemRepository.findByUser(userOptional.get());
+    }
+
+    public void clearCart(String userId) {
+        userRepository.findById(Long.valueOf(userId)).ifPresent(user -> cartItemRepository.deleteByUser(user));
     }
 }
